@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreadWeaver: Adaptive Threading for Efficient Parallel Reasoning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://polyfill-fastly.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #1c1c1e;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Outfit', sans-serif;
+            color: #000000;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #ffffff;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d1d1d6;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a6;
+        }
+
+        /* Minimalist Cards */
+        .minimal-card {
+            background: #ffffff;
+            border: 1px solid #e5e5ea;
+            border-radius: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .minimal-card:hover {
+            border-color: #000000;
+            transform: translateY(-1px);
+        }
+
+        /* Figure Box */
+        .figure-box {
+            background-color: #f5f5f7;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .figure-box img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* Subtle Gradient Text for Emphasis */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right, #0064e0, #000000);
+        }
+
+        /* Expandable Details Styling */
+        details>summary {
+            list-style: none;
+        }
+
+        details>summary::-webkit-details-marker {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-gray-200 selection:text-black pt-16">
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 transition-all duration-300"
+        id="navbar">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="#" class="text-xl font-bold text-black flex items-center gap-2">
+                    ThreadWeaver 🧵⚡️
+                </a>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#overview"
+                        class="text-sm font-medium text-gray-600 hover:text-[#0064e0] transition-colors">Overview</a>
+                    <a href="#methodology"
+                        class="text-sm font-medium text-gray-600 hover:text-[#0064e0] transition-colors">Methodology</a>
+                    <a href="#performance"
+                        class="text-sm font-medium text-gray-600 hover:text-[#0064e0] transition-colors">Performance</a>
+                    <a href="#ablation"
+                        class="text-sm font-medium text-gray-600 hover:text-[#0064e0] transition-colors">Ablation</a>
+                    <a href="#citation"
+                        class="text-sm font-medium text-gray-600 hover:text-[#0064e0] transition-colors">Citation</a>
+                    <a href="assets/paper.pdf" target="_blank"
+                        class="px-4 py-2 bg-black text-white text-sm font-bold rounded-full hover:bg-gray-800 transition-colors">
+                        Paper
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-gray-600 hover:text-black focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu"
+            class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full left-0 shadow-lg">
+            <div class="px-4 py-2 space-y-1">
+                <a href="#overview"
+                    class="block px-3 py-3 text-base font-medium text-gray-600 hover:text-[#0064e0] hover:bg-gray-50 rounded-lg">Overview</a>
+                <a href="#methodology"
+                    class="block px-3 py-3 text-base font-medium text-gray-600 hover:text-[#0064e0] hover:bg-gray-50 rounded-lg">Methodology</a>
+                <a href="#performance"
+                    class="block px-3 py-3 text-base font-medium text-gray-600 hover:text-[#0064e0] hover:bg-gray-50 rounded-lg">Performance</a>
+                <a href="#team"
+                    class="block px-3 py-3 text-base font-medium text-gray-600 hover:text-[#0064e0] hover:bg-gray-50 rounded-lg">Team</a>
+                <a href="assets/paper.pdf" target="_blank"
+                    class="block px-3 py-3 text-base font-medium text-[#0064e0] font-bold">
+                    Read Paper <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="py-24 px-4 text-center border-b border-gray-100">
+        <div class="max-w-5xl mx-auto">
+            <p class="text-[#0064e0] font-bold text-xs tracking-widest uppercase mb-6">
+                New Research from Meta & UC Berkeley
+            </p>
+            <h1 class="text-6xl md:text-8xl font-bold tracking-tighter mb-8 leading-none">
+                ThreadWeaver 🧵⚡️
+            </h1>
+            <p class="text-2xl md:text-3xl text-gray-700 font-light mb-12 max-w-3xl mx-auto leading-snug">
+                Adaptive Threading for Efficient Parallel Reasoning <br />in Language Models
+            </p>
+
+            <div class="flex flex-wrap justify-center gap-x-8 gap-y-3 text-lg text-gray-800 mb-12 font-medium"
+                id="team">
+                <span><a href="https://tonylian.com/" target="_blank" rel="noopener noreferrer"
+                        class="hover:underline hover:text-[#0064e0]">Long Lian</a><sup>1,2</sup></span>
+                <span><a href="https://www.sidaw.xyz/" target="_blank" rel="noopener noreferrer"
+                        class="hover:underline hover:text-[#0064e0]">Sida Wang</a><sup>1</sup></span>
+                <span><a href="https://xujuefei.com/" target="_blank" rel="noopener noreferrer"
+                        class="hover:underline hover:text-[#0064e0]">Felix Juefei-Xu</a><sup>1</sup></span>
+                <span><a href="https://tsujuifu.github.io/" target="_blank" rel="noopener noreferrer"
+                        class="hover:underline hover:text-[#0064e0]">Tsu-Jui Fu</a><sup>1</sup></span>
+                <span><a href="https://xiuyuli.com/" target="_blank" rel="noopener noreferrer"
+                        class="hover:underline hover:text-[#0064e0]">Xiuyu Li</a><sup>2</sup></span>
+                <span><a href="https://www.adamyala.org/" target="_blank" rel="noopener noreferrer"
+                        class="hover:underline hover:text-[#0064e0]">Adam Yala</a><sup>2,3</sup></span>
+                <span><a href="https://people.eecs.berkeley.edu/~trevor/" target="_blank" rel="noopener noreferrer"
+                        class="hover:underline hover:text-[#0064e0]">Trevor Darrell</a><sup>2</sup></span>
+                <span><a href="https://www.alanesuhr.com/" target="_blank" rel="noopener noreferrer"
+                        class="hover:underline hover:text-[#0064e0]">Alane Suhr</a><sup>2</sup></span>
+                <span><a href="https://yuandong-tian.com/" target="_blank" rel="noopener noreferrer"
+                        class="hover:underline hover:text-[#0064e0]">Yuandong Tian</a><sup>1</sup></span>
+                <span><a href="https://victorialin.net/" target="_blank" rel="noopener noreferrer"
+                        class="hover:underline hover:text-[#0064e0]">Xi Victoria Lin</a><sup>1</sup></span>
+            </div>
+
+            <div class="text-sm text-gray-800 mb-12 uppercase tracking-widest font-semibold">
+                <sup>1</sup>Meta Superintelligence Labs (MSL) &nbsp;&bull;&nbsp;
+                <sup>2</sup>UC Berkeley &nbsp;&bull;&nbsp;
+                <sup>3</sup>UCSF
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-4">
+                <!-- Primary Button (Meta Blue) -->
+                <a href="assets/paper.pdf" target="_blank"
+                    class="px-8 py-4 bg-[#0064e0] text-white rounded-full font-bold hover:bg-[#005bb5] transition-all flex items-center gap-2 shadow-sm hover:shadow-md">
+                    Read Paper
+                </a>
+                <!-- Secondary Buttons (White/Gray Border/Blue Text) -->
+                <a href="#"
+                    class="px-8 py-4 bg-white text-[#0064e0] border border-gray-200 rounded-full font-bold hover:bg-gray-50 transition-all flex items-center gap-2 shadow-sm hover:shadow-md">
+                    View Code (Coming Soon)
+                </a>
+                <!-- <a href="#"
+                    class="px-8 py-4 bg-white text-[#0064e0] border border-gray-200 rounded-full font-bold hover:bg-gray-50 transition-all flex items-center gap-2 shadow-sm hover:shadow-md">
+                    Data
+                </a> -->
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-20">
+
+        <!-- Abstract -->
+        <section class="mb-32 max-w-4xl mx-auto" id="overview">
+            <!-- <p class="text-[#0064e0] font-bold text-xs tracking-widest uppercase mb-3">Abstract</p> -->
+            <h2 class="text-4xl font-bold mb-8 text-black">Overview</h2>
+            <p class="text-xl text-gray-800 leading-relaxed">
+                Scaling inference-time computation has enabled Large Language Models (LLMs) to achieve strong
+                reasoning
+                performance, but inherently sequential decoding leads to substantial latency. We introduce <strong
+                    class="text-black">ThreadWeaver</strong>, a framework for adaptive parallel reasoning that
+                achieves
+                accuracy on par with popular sequential reasoning models while significantly reducing inference
+                latency.
+                ThreadWeaver utilizes a two-stage parallel trajectory generator for high-quality data creation, a
+                trie-based training-inference co-design for compatibility with off-the-shelf engines, and a
+                parallelization-aware reinforcement learning framework (P-GRPO). Across six mathematical reasoning
+                benchmarks, ThreadWeaver achieves accuracy comparable to cutting-edge sequential models (e.g., 79.9%
+                on
+                AIME24) while delivering up to <strong class="text-black">1.53x average speedup</strong> in token
+                latency.
+            </p>
+        </section>
+
+        <!-- Figure 1 -->
+        <section class="mb-24">
+            <div class="bg-[#f0f7ff] rounded-3xl p-8 mb-8"> <!-- SAM 3 style light blue background -->
+                <div class="figure-box p-8 bg-white rounded-2xl border border-blue-100">
+                    <img src="assets/main_figure_animation.gif" alt="Main Diagram">
+                </div>
+            </div>
+            <p class="text-gray-700 text-sm max-w-3xl mx-auto text-center">
+                Sequential reasoning solves the problem step by step iteratively, so its reasoning latency grows
+                proportionally to the length of the reasoning chain. ThreadWeaver instead creates concurrent
+                reasoning
+                threads adaptively that tackle different parts of the solution through <code>spawn</code> and
+                <code>join</code> operations, effectively shortening the critical path when additional compute is
+                available.
+            </p>
+        </section>
+
+        <!-- Method Section -->
+        <section class="mb-24" id="methodology">
+            <!-- <p class="text-[#0064e0] font-bold text-xs tracking-widest uppercase mb-3">Our Approach</p> -->
+            <h2 class="text-4xl font-bold mb-16 text-black border-b border-gray-100 pb-8">Methodology</h2>
+
+            <div class="space-y-24">
+
+                <!-- Format -->
+                <div class="grid md:grid-cols-2 gap-16 items-start">
+                    <div class="order-2 md:order-1">
+                        <div
+                            class="bg-gray-50 rounded-xl p-8 font-mono text-sm text-gray-700 overflow-x-auto border border-gray-100">
+                            <div class="text-blue-600 font-bold">&lt;think&gt;</div>
+                            <div class="ml-4 text-gray-800">We will use the distance formula d = sqrt((Δx)^2 +
+                                (Δy)^2).
+                            </div>
+                            <div class="ml-4 text-purple-600 font-bold">&lt;Parallel&gt;</div>
+                            <div class="ml-8 text-green-700 font-bold">&lt;Outlines&gt;</div>
+                            <div class="ml-12 text-green-800">&lt;Outline&gt;1: Compute (Δx)^2.&lt;/Outline&gt;
+                            </div>
+                            <div class="ml-12 text-green-800">&lt;Outline&gt;2: Compute (Δy)^2.&lt;/Outline&gt;
+                            </div>
+                            <div class="ml-8 text-green-700 font-bold">&lt;/Outlines&gt;</div>
+                            <div class="ml-8 text-red-600 font-bold">&lt;Thread&gt;1: Δx = 6, (Δx)^2 =
+                                36.&lt;/Thread&gt;</div>
+                            <div class="ml-8 text-red-600 font-bold">&lt;Thread&gt;2: Δy = -9, (Δy)^2 =
+                                81.&lt;/Thread&gt;</div>
+                            <div class="ml-4 text-purple-600 font-bold">&lt;/Parallel&gt;</div>
+                            <div class="ml-4 text-gray-800">Sum the results: 36 + 81 = 117...</div>
+                            <div class="text-blue-600 font-bold">&lt;/think&gt;</div>
+                        </div>
+                    </div>
+                    <div class="order-1 md:order-2">
+                        <h3 class="text-2xl font-bold mb-4 text-black">Parallel Trajectory Format</h3>
+                        <p class="text-gray-800 mb-4 text-lg">We extend standard autoregressive generation with
+                            lightweight control tokens (<code>&lt;Parallel&gt;</code>,
+                            <code>&lt;Outlines&gt;</code>,
+                            <code>&lt;Thread&gt;</code>) arranged in a fork-join pattern.
+                        </p>
+
+                        <details class="group mt-4">
+                            <summary
+                                class="cursor-pointer text-blue-600 font-medium hover:text-blue-800 flex items-center gap-2">
+                                <span>Deep Dive: Trajectory Structure</span>
+                                <i class="fas fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                            </summary>
+                            <div class="mt-4 text-gray-700 text-sm leading-relaxed pl-4 border-l-2 border-blue-100">
+                                <p class="mb-2">Our format introduces specific tags to manage parallelism:</p>
+                                <ul class="list-disc pl-5 space-y-2">
+                                    <li><strong><code>&lt;think&gt;</code></strong>: Marks the start of the
+                                        reasoning
+                                        trajectory, which may contain sequential segments and zero or more parallel
+                                        blocks.</li>
+                                    <li><strong><code>&lt;Parallel&gt; ... &lt;/Parallel&gt;</code></strong>:
+                                        Defines a
+                                        parallel block. This is the container for branching logic.</li>
+                                    <li><strong><code>&lt;Outlines&gt; ... &lt;/Outlines&gt;</code></strong>:
+                                        Consists
+                                        of numbered <strong><code>&lt;Outline&gt;</code></strong> entries. These
+                                        declare
+                                        independent sub-tasks before they are executed. This planning step is
+                                        crucial
+                                        for the model to organize its parallel execution.</li>
+                                    <li><strong><code>&lt;Thread&gt; i</code></strong>: The execution trajectory of
+                                        the
+                                        <em>i</em>-th sub-task. Crucially, <strong>threads are generated
+                                            independently
+                                            and must not reference other threads.</strong> At inference, each thread
+                                        is
+                                        generated in parallel by the engine.
+                                    </li>
+                                </ul>
+                                <p class="mt-4">This structured trajectory allows the model to explicitly define
+                                    independent sub-tasks. The runtime orchestrator spawns parallel generation for
+                                    each
+                                    <code>&lt;Thread&gt;</code> while decoding all other segments autoregressively.
+                                    This
+                                    means the full trajectory can be generated without any modifications to the
+                                    underlying inference engine (like vLLM or SGLang).
+                                </p>
+                            </div>
+                        </details>
+
+                        <p class="text-sm text-gray-800 mt-4">Format for parallelized reasoning trajectories.</p>
+                    </div>
+                </div>
+
+                <!-- Inference -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-black">Inference State Machine</h3>
+                    <p class="text-gray-800 mb-8 text-lg">Our inference orchestrator manages the "spawn" and
+                        "join" operations using standard request-completion APIs, allowing deployment on standard
+                        engines like vLLM or SGLang without modification.</p>
+
+                    <div class="figure-box p-8 bg-gray-50 mb-4">
+                        <img src="assets/decomposition_inference.png" alt="Inference Diagram"
+                            class="w-full max-w-4xl mx-auto">
+                    </div>
+
+                    <details class="group mt-6 mb-4">
+                        <summary
+                            class="cursor-pointer text-blue-600 font-medium hover:text-blue-800 flex items-center gap-2 justify-center">
+                            <span>Deep Dive: The 5-Phase State Machine</span>
+                            <i class="fas fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div
+                            class="mt-4 text-gray-700 text-sm leading-relaxed max-w-3xl mx-auto bg-gray-50 p-6 rounded-xl">
+                            <p class="mb-4">We implement inference as a minimal state machine operating on
+                                request-response pairs. This allows us to use standard text-completion APIs without
+                                custom CUDA kernels or engine hacks.</p>
+                            <ol class="list-decimal pl-5 space-y-3">
+                                <li><strong>Sequential Phase</strong>: The model decodes sequentially (standard
+                                    autoregressive generation) until it emits the <code>&lt;/Outlines&gt;</code>
+                                    token.
+                                    This token acts as a stop signal for the sequential phase.</li>
+                                <li><strong>Parse Outlines</strong>: The orchestrator extracts the numbered
+                                    <code>&lt;Outline&gt;</code> entries from the generated text. These outlines
+                                    define
+                                    what needs to be done in parallel.
+                                </li>
+                                <li><strong>Parallel Phase</strong>: For each outline <em>i</em>, the orchestrator
+                                    issues a separate completion request. Each request is seeded with the prompt
+                                    <code>&lt;Thread&gt; i:</code> appended to the previous context. These requests
+                                    run
+                                    in parallel on the inference engine. Each thread stops generating when it hits
+                                    <code>&lt;/Thread&gt;</code>.
+                                </li>
+                                <li><strong>Join</strong>: Once all threads are complete, the orchestrator
+                                    concatenates
+                                    the original context and all the generated thread outputs. It appends the
+                                    closing
+                                    <code>&lt;/Parallel&gt;</code> tag to form the context for the next phase.
+                                </li>
+                                <li><strong>Continue</strong>: The model resumes sequential decoding from the joined
+                                    context until it hits the next parallel block or the end of the response.</li>
+                            </ol>
+                            <p class="mt-4"><strong>Why this matters:</strong> Because we use standard API calls,
+                                ThreadWeaver inherits all existing serving optimizations like paged attention and
+                                prefix
+                                caching. Prefix caching is particularly important here, as it prevents re-computing
+                                the
+                                KV cache for the shared prefix when spawning multiple threads.</p>
+                        </div>
+                    </details>
+
+                    <p class="text-gray-700 text-sm text-center">
+                        Inference-time request sequence. Timestep 1 decodes the prefix sequentially. Timestep 2
+                        launches
+                        completion requests per outline in parallel. Timestep 3 resumes sequential decoding.
+                    </p>
+                </div>
+
+                <!-- Training -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-black">Trie-Based Training</h3>
+                    <p class="text-gray-800 mb-8 text-lg">We flatten the reasoning tree into a single sequence
+                        using a Trie structure with ancestor-only attention masking, preventing information leakage
+                        between threads during training.</p>
+
+                    <div class="figure-box p-8 bg-gray-50 mb-4">
+                        <img src="assets/decomposition_training.png" alt="Training Diagram"
+                            class="w-full max-w-4xl mx-auto">
+                    </div>
+
+                    <details class="group mt-6 mb-4">
+                        <summary
+                            class="cursor-pointer text-blue-600 font-medium hover:text-blue-800 flex items-center gap-2 justify-center">
+                            <span>Deep Dive: Trie Construction & Masking</span>
+                            <i class="fas fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div
+                            class="mt-4 text-gray-700 text-sm leading-relaxed max-w-3xl mx-auto bg-gray-50 p-6 rounded-xl">
+                            <p class="mb-4">To fine-tune the model to output these parallel structures, we need to
+                                align
+                                the training data with the inference process. We use a Trie (prefix tree) approach:
+                            </p>
+                            <ol class="list-decimal pl-5 space-y-3">
+                                <li><strong>Extraction</strong>: We first extract all
+                                    <code>&lt;context, completion&gt;</code> pairs that the inference state machine
+                                    would encounter. Each context is a prompt (or partial generation), and each
+                                    completion is the model's response (e.g., a single thread).
+                                </li>
+                                <li><strong>Trie Construction</strong>: We insert these units into a token-level
+                                    Trie.
+                                    The root is the shared prompt. Branches in the Trie represent divergent
+                                    continuations (e.g., different parallel threads). Nodes share the same ancestor
+                                    path
+                                    but are isolated from siblings.</li>
+                                <li><strong>Flattening & Masking</strong>: We traverse the Trie to produce a single
+                                    flat
+                                    sequence for training. Crucially, we build an <strong>ancestor-only attention
+                                        mask</strong>. Token <em>i</em> can attend to token <em>j</em> if and only
+                                    if
+                                    <em>j</em> is an ancestor of <em>i</em> in the Trie.
+                                </li>
+                            </ol>
+                            <p class="mt-4"><strong>The Result:</strong> This prevents "cross-thread leakage" during
+                                training. Thread 1 cannot attend to Thread 2, even though they are packed into the
+                                same
+                                training sequence. This ensures that the training objective perfectly matches the
+                                independent parallel generation used at inference time.</p>
+                        </div>
+                    </details>
+
+                    <p class="text-gray-700 text-sm text-center">
+                        Our training sequence formatting. (1) Extract context-completion pairs. (2) Insert into a
+                        token-level trie. (3) Traverse the trie to produce a flat sequence.
+                    </p>
+                </div>
+
+                <!-- Appendix Figure for Complex Training -->
+                <details class="group border border-gray-200 rounded-xl overflow-hidden">
+                    <summary
+                        class="flex items-center justify-between p-6 cursor-pointer hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-black">
+                            View Details: Handling Multiple Parallel Blocks
+                        </span>
+                        <span class="text-gray-800 group-open:rotate-180 transition-transform duration-300"><i
+                                class="fas fa-chevron-down"></i></span>
+                    </summary>
+                    <div class="p-6 bg-white border-t border-gray-100">
+                        <div class="figure-box p-8 bg-gray-50 mb-4">
+                            <img src="assets/decomposition_training_two_parallel.png" alt="Complex Training Diagram"
+                                class="w-full max-w-4xl mx-auto">
+                        </div>
+                        <p class="text-center text-gray-700 text-sm">
+                            Trie-based sequence merging with more than one parallel block. Even with multiple
+                            fork-join
+                            structures, we flatten the tree into one packed training sequence.
+                        </p>
+                    </div>
+                </details>
+
+                <!-- Parallel Trajectory Generation (New Deep Dive) -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-black">Parallel Trajectory Generation</h3>
+                    <p class="text-gray-800 mb-8 text-lg">Obtaining high-quality parallel reasoning data is
+                        difficult. We use a two-stage pipeline to create it from sequential data.</p>
+
+                    <div class="grid md:grid-cols-2 gap-8 mb-6">
+                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                            <h4 class="font-bold text-black mb-2 flex items-center gap-2">
+                                <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">Stage
+                                    1</span>
+                                Lightweight Rewriting
+                            </h4>
+                            <p class="text-sm text-gray-800 leading-relaxed">
+                                We use a strong LLM (GPT-5) to identify parallel blocks in sequential traces. Unlike
+                                other methods, we do <strong>not</strong> regenerate the whole text. We perform
+                                minimal
+                                "surgical" rewrites to add in parallel annotations and remove cross-thread dependencies,
+                                preserving the original
+                                reasoning quality.
+                            </p>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                            <h4 class="font-bold text-black mb-2 flex items-center gap-2">
+                                <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">Stage
+                                    2</span>
+                                Scalable Self-Training
+                            </h4>
+                            <p class="text-sm text-gray-800 leading-relaxed">
+                                We scale from 1k to 17k samples by having the model generate its own parallel data.
+                                We
+                                filter these trajectories for both <strong>format correctness</strong> and
+                                <strong>answer correctness</strong>, creating a massive dataset aligned with the
+                                model's
+                                own distribution. Training with this scaled dataset leads to improved performance with
+                                parallel reasoning.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Dataset Statistics Table -->
+                    <div class="mb-8 border border-gray-200 rounded-xl overflow-hidden">
+                        <div class="bg-gray-50 px-6 py-4 border-b border-gray-100">
+                            <h4 class="font-bold text-black text-sm uppercase tracking-widest">Dataset Statistics
+                            </h4>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-gray-800">
+                                <thead class="text-xs text-gray-700 uppercase bg-white border-b border-gray-100">
+                                    <tr>
+                                        <th class="px-6 py-3">Metric</th>
+                                        <th class="px-6 py-3">Sequential (Sampled)</th>
+                                        <th class="px-6 py-3">Stage 1 (Rewritten)</th>
+                                        <th class="px-6 py-3">Stage 2 (Self-Train)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100 bg-white">
+                                    <tr>
+                                        <td class="px-6 py-3 font-medium text-gray-900">Size (Trajectories)</td>
+                                        <td class="px-6 py-3">1,000</td>
+                                        <td class="px-6 py-3">959</td>
+                                        <td class="px-6 py-3 font-bold text-blue-600">17,491</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-3 font-medium text-gray-900">Avg. Parallel Ratio</td>
+                                        <td class="px-6 py-3">0.00</td>
+                                        <td class="px-6 py-3">0.77</td>
+                                        <td class="px-6 py-3">0.68</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-3 font-medium text-gray-900">Self-Parallelism Speedup
+                                        </td>
+                                        <td class="px-6 py-3">1.00x</td>
+                                        <td class="px-6 py-3">1.35x</td>
+                                        <td class="px-6 py-3">1.22x</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-3 font-medium text-gray-900">Avg. Parallel Blocks</td>
+                                        <td class="px-6 py-3">0.0</td>
+                                        <td class="px-6 py-3">6.26</td>
+                                        <td class="px-6 py-3">4.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="px-6 py-3 bg-gray-50 border-t border-gray-100 text-xs text-gray-800">
+                            Comparison of dataset characteristics across the pipeline. Stage 2 provides a massive
+                            scale-up in volume while maintaining high parallel structure.
+                        </div>
+                    </div>
+
+                    <details class="group mt-6 mb-4">
+                        <summary
+                            class="cursor-pointer text-blue-600 font-medium hover:text-blue-800 flex items-center gap-2 justify-center">
+                            <span>Deep Dive: Pipeline Details</span>
+                            <i class="fas fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div
+                            class="mt-4 text-gray-700 text-sm leading-relaxed max-w-3xl mx-auto bg-gray-50 p-6 rounded-xl">
+                            <h4 class="font-bold text-black mb-2">Stage 1: LLM Rewriting (Cold Start)</h4>
+                            <p class="mb-4">We start with standard sequential reasoning traces (Chain-of-Thought).
+                                We
+                                use a strong LLM (like GPT-4 or 5) to annotate and rewrite them into our parallel
+                                format. Crucially, we <strong>do not regenerate the entire solution</strong>.
+                                Instead,
+                                we use a 5-step pipeline that identifies parallel blocks, extracts threads, and
+                                performs
+                                minimal "surgical" rewrites to remove cross-thread dependencies (e.g., changing "the
+                                previous result" to an explicit value). This preserves the original reasoning
+                                quality
+                                while enforcing independence.</p>
+
+                            <h4 class="font-bold text-black mb-2">Stage 2: Self-Training with Reward Filtering</h4>
+                            <p class="mb-2">LLM rewriting is expensive and doesn't scale. To solve this, we use the
+                                data
+                                from Stage 1 to fine-tune a "cold start" model. Then, we use this model to generate
+                                its
+                                own parallel trajectories on a massive dataset (53k prompts).</p>
+                            <p>We filter these self-generated trajectories using two criteria:</p>
+                            <ul class="list-disc pl-5 space-y-1 mb-4">
+                                <li><strong>Format Correctness</strong>: Must follow the strict XML schema.</li>
+                                <li><strong>Answer Correctness</strong>: The final answer must match the ground
+                                    truth.
+                                </li>
+                            </ul>
+                            <p>This yields a large-scale, high-quality dataset that is aligned with the model's own
+                                generation patterns, bridging the gap between "rewritten" data and actual inference.
+                            </p>
+                        </div>
+                    </details>
+                </div>
+
+                <!-- P-GRPO (New Deep Dive) -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-black">P-GRPO Reinforcement Learning</h3>
+                    <p class="text-gray-800 mb-8 text-lg">We introduce Parallelization-Aware GRPO (P-GRPO) to
+                        jointly optimize for accuracy and latency reduction.</p>
+
+                    <div class="grid md:grid-cols-2 gap-8 mb-6">
+                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                            <h4 class="font-bold text-black mb-2">Parallelization-Aware Reward</h4>
+                            <p class="text-sm text-gray-800 leading-relaxed">
+                                We introduce a dual-objective reward: <code>Correctness + Acceleration</code>. The
+                                acceleration term is proportional to the reduction in the "critical path" (longest
+                                thread), incentivizing the model to parallelize whenever possible without
+                                sacrificing
+                                accuracy.
+                            </p>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                            <h4 class="font-bold text-black mb-2">Stable Optimization</h4>
+                            <p class="text-sm text-gray-800 leading-relaxed">
+                                Standard RL methods fail with parallel rewards because variance normalization causes
+                                the
+                                acceleration term to dominate. We introduce <strong>mean-centered
+                                    normalization</strong>
+                                to stably optimize for both speed and accuracy.
+                            </p>
+                        </div>
+                    </div>
+
+                    <details class="group mt-6 mb-4">
+                        <summary
+                            class="cursor-pointer text-blue-600 font-medium hover:text-blue-800 flex items-center gap-2 justify-center">
+                            <span>Deep Dive: P-GRPO & Rewards</span>
+                            <i class="fas fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div
+                            class="mt-4 text-gray-700 text-sm leading-relaxed max-w-3xl mx-auto bg-gray-50 p-6 rounded-xl">
+                            <h4 class="font-bold text-black mb-2">Parallelization-Aware Reward</h4>
+                            <p class="mb-4">We don't just reward correct answers. We add a soft <strong>acceleration
+                                    reward</strong>. The total reward is
+                                <code>r = Correctness + Acceleration</code>.
+                                The acceleration term is proportional to the reduction in the "critical path"
+                                (longest
+                                thread) compared to the total token count. This incentivizes the model to
+                                parallelize
+                                whenever possible, but <em>only</em> if it leads to a correct answer.
+                            </p>
+
+                            <h4 class="font-bold text-black mb-2">Thread-Wise Advantage Broadcast</h4>
+                            <p class="mb-4">Standard RL methods struggle with parallel branches. In P-GRPO, we
+                                compute a
+                                single scalar reward for the <em>entire</em> trajectory and then
+                                <strong>broadcast</strong> the advantage to all tokens in that trajectory. This is
+                                mathematically justified and avoids the complexity of assigning partial credit to
+                                individual threads.
+                            </p>
+
+                            <h4 class="font-bold text-black mb-2">Mean-Centered Normalization</h4>
+                            <p class="mb-4">Standard GRPO divides by the standard deviation of rewards. This is
+                                problematic when all rollouts are correct: the correctness reward becomes constant
+                                and
+                                is removed by mean-centering. The remaining variance comes solely from the
+                                acceleration
+                                term. Dividing by the standard deviation then re-scales this acceleration term to
+                                unit
+                                variance, effectively cancelling out our small weighting factor (\(\rho\)) and causing
+                                the model to aggressively optimize for speed at the expense of accuracy. We fix this
+                                by
+                                removing the standard-deviation normalization:</p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 font-mono text-xs">
+                                <div class="bg-red-50 p-3 rounded border border-red-100">
+                                    <div class="text-red-800 font-bold mb-1">Standard GRPO</div>
+                                    <div class="mb-1">$$A_i = \frac{r_i - \mu}{\sigma}$$</div>
+                                    <div class="text-red-600 text-[10px]">Cancels \(\rho\) when correct</div>
+                                </div>
+                                <div class="bg-green-50 p-3 rounded border border-green-100">
+                                    <div class="text-green-800 font-bold mb-1">P-GRPO (Ours)</div>
+                                    <div class="mb-1">$$A_i = r_i - \mu$$</div>
+                                    <div class="text-green-600 text-[10px]">Preserves scale \(\rho\)</div>
+                                </div>
+                            </div>
+
+                            <p class="mb-6">This simple change stabilizes training and maintains a healthy balance
+                                between accuracy
+                                and speed.</p>
+
+                            <h4 class="font-bold text-black mb-2">P-GRPO Loss Function</h4>
+                            <p class="mb-4">The full P-GRPO loss function is defined as:</p>
+                            <div class="overflow-x-auto mb-6">
+                                $$ \mathcal{L}_{\text{P-GRPO}}(\theta) = -
+                                \frac{1}{\sum_{p\in\mathcal{B}}\sum_{i=1}^{k}
+                                T_{p,i}} \sum_{p\in\mathcal{B}}\sum_{i=1}^{k} A_{p,i} \sum_{m=1}^{M_i} \log
+                                \pi_{\theta}(\text{comp}_{p}^{(i,m)} \mid \text{cont}_{p}^{(i,m)}) $$
+                            </div>
+                            <p class="text-xs text-gray-700 mb-6">
+                                Where \(A_{p,i}\) is the broadcasted advantage, \(M_i\) is the number of parallel blocks
+                                in
+                                trajectory \(i\), and the inner sum accumulates log-probs over all completion tokens
+                                in
+                                the parallel structure.
+                            </p>
+
+                            <h4 class="font-bold text-black mb-2">Algorithm: P-GRPO Training Loop</h4>
+                            <div class="overflow-x-auto mb-6 bg-white p-4 rounded-lg border border-gray-200 text-black">
+                                $$
+                                \begin{array}{l}
+                                \textbf{Require: } \text{Post-SFT LLM parameters } \theta; \text{ training prompt set }
+                                \mathcal{D}; \\
+                                \quad \quad \quad \quad \text{number of RL iterations } N; \text{ group size } k \\
+                                \textbf{for } j = 0, 1, \ldots, N-1 \textbf{ do} \\
+                                \quad \text{Sample a minibatch } \mathcal{B} \subset \mathcal{D} \text{ of prompts}
+                                \\
+                                \quad \textbf{for each } p \in \mathcal{B} \textbf{ do} \\
+                                \quad \quad \text{Roll out } k \text{ parallel trajectories }
+                                \{\tau_{p}^{(i)}\}_{i=1}^k
+                                \text{ with } \pi_{\theta} \\
+                                \quad \quad \text{Compute } r_{p,i} = \mathcal{R}_{\text{correct}} +
+                                \mathcal{R}_{\text{accel}} \text{ for each } \tau_{p}^{(i)} \\
+                                \quad \quad \text{Compute } \mu_p = \text{mean}(\{r_{p,i}\}) \text{ and }
+                                A_{p,i}^{\text{P-GRPO}} = r_{p,i} - \mu_p \\
+                                \quad \quad \text{Broadcast } A_{p,i}^{\text{P-GRPO}} \text{ to all tokens of }
+                                \tau_{p}^{(i)} \\
+                                \quad \textbf{end for} \\
+                                \quad \text{Form the loss } \mathcal{L}_{\text{P-GRPO}}(\theta) \\
+                                \quad \text{Update parameters with gradient }
+                                \nabla_{\theta}\mathcal{L}_{\text{P-GRPO}}(\theta) \\
+                                \textbf{end for}
+                                \end{array}
+                                $$
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Main Results Section -->
+        <section class="mb-24" id="performance">
+            <!-- <p class="text-[#0064e0] font-bold text-xs tracking-widest uppercase mb-3">Performance</p> -->
+            <h2 class="text-4xl font-bold mb-16 text-black border-b border-gray-100 pb-8">Performance</h2>
+
+            <p class="text-xl text-gray-800 mb-12 max-w-3xl">ThreadWeaver matches the accuracy of sequential
+                baselines
+                while providing substantial speedups across 6 major benchmarks. Our results highlight not just
+                efficiency, but the importance of high-quality data and stable training objectives.</p>
+
+            <!-- Experimental Setup Card -->
+            <div class="bg-gray-50 p-8 rounded-xl border border-gray-100 mb-12">
+                <h3 class="font-bold text-black mb-6 flex items-center gap-2 text-xl">
+                    <i class="fas fa-flask text-blue-600"></i>
+                    Experimental Setup
+                </h3>
+                <div class="space-y-6 text-gray-800 leading-relaxed">
+                    <p>
+                        We evaluate ThreadWeaver atop <strong>Qwen3-8B</strong>, a state-of-the-art reasoning model.
+                        Our
+                        evaluation pipeline is designed to rigorously test both the accuracy and efficiency of
+                        parallel
+                        reasoning across diverse mathematical domains.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-8 mt-6">
+                        <div>
+                            <h4 class="font-bold text-gray-900 mb-2">Training Pipeline</h4>
+                            <ul class="list-disc pl-5 space-y-2 text-sm">
+                                <li><strong>Supervised Fine-Tuning (SFT)</strong>: We fine-tune Qwen3-8B for 8
+                                    epochs on
+                                    959 high-quality rewritten trajectories to initialize the parallel reasoning
+                                    capabilities.</li>
+                                <li><strong>Self-Training</strong>: The model generates its own parallel data on 53k
+                                    prompts. We filter for correctness, yielding 17k high-quality samples for a
+                                    second
+                                    stage of SFT (1 epoch).</li>
+                                <li><strong>Reinforcement Learning (RL)</strong>: We apply P-GRPO for 350 steps with
+                                    a
+                                    batch size of 128 and 8 rollouts per prompt, optimizing for both accuracy and
+                                    latency.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-900 mb-2">Evaluation Protocol</h4>
+                            <ul class="list-disc pl-5 space-y-2 text-sm">
+                                <li><strong>Benchmarks</strong>: We test on 6 datasets: AIME24, AIME25, AMC23,
+                                    MATH500,
+                                    Minerva Math, and OlympiadBench.</li>
+                                <li><strong>Baselines</strong>: We compare against a strong <strong>Sequential GRPO
+                                        Baseline</strong> trained on the exact same prompts with identical RL
+                                    hyperparameters.</li>
+                                <li><strong>Compute</strong>: All experiments use vLLM for inference with a 40k
+                                    token
+                                    budget per response. Wall-clock measurements are conducted on 4x H100 GPUs.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subtitle: Accuracy & Efficiency -->
+            <h3 class="text-2xl font-bold mb-6 text-black">Accuracy & Efficiency Comparison</h3>
+            <p class="text-gray-800 mb-6">
+                Comparison between sequential GRPO baseline and ThreadWeaver on Qwen3-8B across all six benchmarks.
+                ThreadWeaver achieves comparable accuracy with significantly lower latency.
+            </p>
+
+            <!-- Table 1: All 6 Benchmarks -->
+            <div class="border border-gray-200 rounded-xl overflow-hidden mb-16">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-800">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-100">
+                            <tr>
+                                <th class="px-6 py-4 font-bold">Metric</th>
+                                <th class="px-6 py-4 font-bold">Model</th>
+                                <th class="px-6 py-4 font-bold">AIME24</th>
+                                <th class="px-6 py-4 font-bold">AIME25</th>
+                                <th class="px-6 py-4 font-bold">AMC23</th>
+                                <th class="px-6 py-4 font-bold">MATH500</th>
+                                <th class="px-6 py-4 font-bold">Minerva</th>
+                                <th class="px-6 py-4 font-bold">Olympiad</th>
+                                <th class="px-6 py-4 font-bold">Avg</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <!-- Accuracy -->
+                            <tr class="bg-white">
+                                <td class="px-6 py-4 font-bold text-black" rowspan="2">Accuracy</td>
+                                <td class="px-6 py-4">Qwen3-8B (Seq.)</td>
+                                <td class="px-6 py-4">78.3%</td>
+                                <td class="px-6 py-4">61.6%</td>
+                                <td class="px-6 py-4">92.6%</td>
+                                <td class="px-6 py-4">91.8%</td>
+                                <td class="px-6 py-4">43.9%</td>
+                                <td class="px-6 py-4">65.0%</td>
+                                <td class="px-6 py-4">72.2%</td>
+                            </tr>
+                            <tr class="bg-blue-50/50">
+                                <td class="px-6 py-4 font-semibold text-blue-600">ThreadWeaver</td>
+                                <td class="px-6 py-4 font-bold text-blue-600">79.9%</td>
+                                <td class="px-6 py-4 font-bold text-blue-600">60.5%</td>
+                                <td class="px-6 py-4 font-bold text-blue-600">92.3%</td>
+                                <td class="px-6 py-4 font-bold text-blue-600">91.4%</td>
+                                <td class="px-6 py-4 font-bold text-blue-600">43.7%</td>
+                                <td class="px-6 py-4 font-bold text-blue-600">63.5%</td>
+                                <td class="px-6 py-4 font-bold text-blue-600">71.9%</td>
+                            </tr>
+                            <!-- Token Latency -->
+                            <tr class="bg-white">
+                                <td class="px-6 py-4 font-bold text-black" rowspan="2">Latency</td>
+                                <td class="px-6 py-4">Qwen3-8B (Seq.)</td>
+                                <td class="px-6 py-4">19.4k</td>
+                                <td class="px-6 py-4">24.6k</td>
+                                <td class="px-6 py-4">13.8k</td>
+                                <td class="px-6 py-4">7.2k</td>
+                                <td class="px-6 py-4">10.6k</td>
+                                <td class="px-6 py-4">15.2k</td>
+                                <td class="px-6 py-4">15.1k</td>
+                            </tr>
+                            <tr class="bg-blue-50/50">
+                                <td class="px-6 py-4 font-semibold text-blue-600">ThreadWeaver</td>
+                                <td class="px-6 py-4 font-bold text-blue-600">16.9k</td>
+                                <td class="px-6 py-4 font-bold text-blue-600">24.0k</td>
+                                <td class="px-6 py-4 font-bold text-blue-600">12.0k</td>
+                                <td class="px-6 py-4 font-bold text-blue-600">6.4k</td>
+                                <td class="px-6 py-4 font-bold text-blue-600">7.3k</td>
+                                <td class="px-6 py-4 font-bold text-blue-600">12.8k</td>
+                                <td class="px-6 py-4 font-bold text-blue-600">13.2k</td>
+                            </tr>
+                            <!-- Speedup -->
+                            <tr class="bg-green-50/50">
+                                <td class="px-6 py-4 font-bold text-green-800" colspan="2">Avg Speedup</td>
+                                <td class="px-6 py-4 font-bold text-green-700">1.14x</td>
+                                <td class="px-6 py-4 font-bold text-green-700">1.03x</td>
+                                <td class="px-6 py-4 font-bold text-green-700">1.16x</td>
+                                <td class="px-6 py-4 font-bold text-green-700">1.23x</td>
+                                <td class="px-6 py-4 font-bold text-green-700">1.53x</td>
+                                <td class="px-6 py-4 font-bold text-green-700">1.21x</td>
+                                <td class="px-6 py-4 font-bold text-green-700">1.22x</td>
+                            </tr>
+                            <!-- Max Speedup -->
+                            <tr class="bg-green-50/50">
+                                <td class="px-6 py-4 font-bold text-green-800" colspan="2">Max Speedup (correct only)
+                                </td>
+                                <td class="px-6 py-4 font-bold text-green-700">1.47x</td>
+                                <td class="px-6 py-4 font-bold text-green-700">1.21x</td>
+                                <td class="px-6 py-4 font-bold text-green-700">1.67x</td>
+                                <td class="px-6 py-4 font-bold text-green-700">3.05x</td>
+                                <td class="px-6 py-4 font-bold text-green-700">3.56x</td>
+                                <td class="px-6 py-4 font-bold text-green-700">1.92x</td>
+                                <td class="px-6 py-4 font-bold text-green-700">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Subtitle: Wall Clock Speedup -->
+            <h3 class="text-2xl font-bold mb-6 text-black">Real-World Wall-Clock Speedup</h3>
+            <div class="mb-16">
+                <p class="text-gray-800 mb-6">
+                    Token latency is a proxy for critical path length. To verify real-world gains, we measured
+                    wall-clock time on 50 MATH500 problems using 4 GPUs.
+                </p>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-gray-700 font-medium">Sequential Inference</span>
+                            <span class="text-gray-900 font-bold">162.34s</span>
+                        </div>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-blue-600 font-medium">Parallel Inference (4 GPUs)</span>
+                            <span class="text-blue-700 font-bold">142.21s</span>
+                        </div>
+                        <div class="border-t border-gray-200 pt-4 flex justify-between items-center">
+                            <span class="text-green-700 font-bold uppercase tracking-widest text-xs">Wall-Clock
+                                Speedup</span>
+                            <span class="text-green-700 font-bold text-xl">1.14x</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-700">
+                        The speedup in token latency also transfers to real-world wall-clock time speedup: enabling
+                        parallelization reduces wall-clock latency by 1.14x.
+                        This demonstrates that ThreadWeaver can effectively convert additional computational resources
+                        into lower inference latency.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Subtitle: Distribution Analysis -->
+            <h3 class="text-2xl font-bold mb-6 text-black">Speedup Distribution Analysis</h3>
+            <div class="mb-16">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                    <div class="space-y-2">
+                        <p class="text-center font-bold text-gray-700 text-sm uppercase tracking-widest">AIME 24</p>
+                        <img src="assets/aime_speedup.png" alt="AIME Speedup"
+                            class="w-full h-auto rounded-lg border border-gray-100">
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-center font-bold text-gray-700 text-sm uppercase tracking-widest">MATH-500
+                        </p>
+                        <img src="assets/math_speedup.png" alt="MATH Speedup"
+                            class="w-full h-auto rounded-lg border border-gray-100">
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-center font-bold text-gray-700 text-sm uppercase tracking-widest">AMC 23</p>
+                        <img src="assets/amc_speedup.png" alt="AMC Speedup"
+                            class="w-full h-auto rounded-lg border border-gray-100">
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-center font-bold text-gray-700 text-sm uppercase tracking-widest">
+                            OlympiadBench
+                        </p>
+                        <img src="assets/olympiad_speedup.png" alt="OlympiadBench Speedup"
+                            class="w-full h-auto rounded-lg border border-gray-100">
+                    </div>
+                </div>
+                <p class="text-gray-700 text-sm">
+                    Per-problem speedup distributions. A vertical line at 1.0x marks parity. ThreadWeaver achieves
+                    significant speedups on highly decomposable problems (right tail of distribution).
+                </p>
+            </div>
+
+            <!-- Subtitle: SOTA Comparison -->
+            <h3 class="text-2xl font-bold mb-6 text-black">Comparison with State-of-the-Art</h3>
+            <div class="mb-16">
+                <div class="overflow-x-auto rounded-xl border border-gray-200">
+                    <table class="w-full text-sm text-left text-gray-800">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3">Model</th>
+                                <th class="px-6 py-3">Size</th>
+                                <th class="px-6 py-3">AIME24 Accuracy</th>
+                                <th class="px-6 py-3">Activation Ratio</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="bg-white">
+                                <td class="px-6 py-4">Multiverse (Yang et al., 2025)</td>
+                                <td class="px-6 py-4">32B</td>
+                                <td class="px-6 py-4">53.8%</td>
+                                <td class="px-6 py-4">-</td>
+                            </tr>
+                            <tr class="bg-white">
+                                <td class="px-6 py-4">Parallel-R1-Unseen (Zheng et al., 2025)</td>
+                                <td class="px-6 py-4">4B</td>
+                                <td class="px-6 py-4">16.3%</td>
+                                <td class="px-6 py-4">27.3%</td>
+                            </tr>
+                            <tr class="bg-blue-50/50 font-semibold">
+                                <td class="px-6 py-4 text-blue-700">ThreadWeaver (Ours)</td>
+                                <td class="px-6 py-4">8B</td>
+                                <td class="px-6 py-4 text-blue-700">79.9%</td>
+                                <td class="px-6 py-4">79.9%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Subtitle: Qualitative Analysis -->
+            <!-- Subtitle: Qualitative Analysis -->
+            <h3 class="text-2xl font-bold mb-6 text-black">Qualitative Analysis</h3>
+
+            <!-- Success Case -->
+            <div class="mb-12">
+                <p class="text-gray-800 mb-6">
+                    ThreadWeaver effectively decomposes complex problems into independent sub-tasks. In this success
+                    case, the model correctly identifies two parallel paths to evaluate a trigonometric expression: one
+                    using symbolic identities and another using numerical verification.
+                </p>
+                <div class="bg-green-50 p-6 rounded-xl border border-green-100">
+                    <h4 class="font-bold text-green-800 mb-2 flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        Success Case: Trigonometric Expression Evaluation
+                    </h4>
+                    <p class="text-sm text-gray-700 leading-relaxed mb-4">
+                        <strong>Prompt:</strong> Evaluate \(\sin (\arcsin 0.4 + \arcsin 0.5) \cdot \sin (\arcsin 0.5 -
+                        \arcsin 0.4)\).
+                    </p>
+                    <div class="bg-white p-4 rounded-lg border border-green-100 font-mono text-xs overflow-x-auto">
+                        <div class="text-blue-600 font-bold mb-1">&lt;think&gt;</div>
+                        <div class="pl-4 border-l-2 border-gray-100">
+                            <div class="text-gray-500 italic mb-2">
+                                [Identifies the problem as evaluating sin(arcsin 0.4 + arcsin 0.5) · sin(arcsin 0.5 −
+                                arcsin 0.4)...]
+                            </div>
+
+                            <div class="text-gray-700 mb-2">&lt;Parallel&gt;</div>
+                            <div class="pl-4 border-l-2 border-gray-100">
+                                <div class="text-purple-600 mb-1">&lt;Goal&gt;</div>
+                                <div class="pl-4 text-gray-800 mb-1">
+                                    <div class="text-green-700">&lt;Outline&gt;1: Use sin(A + B) = sinA cosB + cosA
+                                        sinB... then expand...&lt;/Outline&gt;</div>
+                                    <div class="text-green-700">&lt;Outline&gt;2: Compute cosA... and cosB... then
+                                        substitute...&lt;/Outline&gt;</div>
+                                </div>
+                                <div class="text-purple-600 mb-2">&lt;/Goal&gt;</div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="bg-gray-50 p-2 rounded">
+                                        <div class="text-blue-600 font-bold mb-1">&lt;Path 1&gt;</div>
+                                        <div class="text-gray-700">
+                                            [Attempts expansion... switches to product-to-sum identity... simplifying to
+                                            (cos(2A) − cos(2B)) / 2.]
+                                        </div>
+                                        <div class="text-blue-600 mt-1">&lt;/Path 1&gt;</div>
+                                    </div>
+                                    <div class="bg-gray-50 p-2 rounded">
+                                        <div class="text-blue-600 font-bold mb-1">&lt;Path 2&gt;</div>
+                                        <div class="text-gray-700">
+                                            [Uses numerical approximations... confirming the product is about 0.09.]
+                                        </div>
+                                        <div class="text-blue-600 mt-1">&lt;/Path 2&gt;</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-gray-700 mt-2">&lt;/Parallel&gt;</div>
+
+                            <div class="text-gray-700 mt-2 mb-2">&lt;Parallel&gt;</div>
+                            <div class="pl-4 border-l-2 border-gray-100">
+                                <div class="text-purple-600 mb-1">&lt;Goal&gt;</div>
+                                <div class="pl-4 text-gray-800 mb-1">
+                                    <div class="text-green-700">&lt;Outline&gt;1: Use product-to-sum identity... compute
+                                        cos(2A) and cos(2B)...&lt;/Outline&gt;</div>
+                                    <div class="text-green-700">&lt;Outline&gt;2: Compute A and B numerically... compare
+                                        with symbolic result.&lt;/Outline&gt;</div>
+                                </div>
+                                <div class="text-purple-600 mb-2">&lt;/Goal&gt;</div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="bg-gray-50 p-2 rounded">
+                                        <div class="text-blue-600 font-bold mb-1">&lt;Path 1&gt;</div>
+                                        <div class="text-gray-700">
+                                            [Computes cos(2A)=0.68 and cos(2B)=0.5... obtains exactly 0.09.]
+                                        </div>
+                                        <div class="text-blue-600 mt-1">&lt;/Path 1&gt;</div>
+                                    </div>
+                                    <div class="bg-gray-50 p-2 rounded">
+                                        <div class="text-blue-600 font-bold mb-1">&lt;Path 2&gt;</div>
+                                        <div class="text-gray-700">
+                                            [Approximates A and B numerically... confirms product closely matches 0.09.]
+                                        </div>
+                                        <div class="text-blue-600 mt-1">&lt;/Path 2&gt;</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-gray-700 mt-2">&lt;/Parallel&gt;</div>
+
+                            <div class="text-gray-500 italic mt-2">
+                                [Concludes that both algebraic and numerical methods agree: the value is 0.09.]
+                            </div>
+                            <div class="font-bold mt-2">Final Answer: \boxed{0.09}</div>
+                        </div>
+                        <div class="text-blue-600 font-bold mt-1">&lt;/think&gt;</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Folded Failure Case -->
+            <details class="group border border-red-100 rounded-xl overflow-hidden bg-red-50/30">
+                <summary class="flex items-center justify-between p-6 cursor-pointer hover:bg-red-50 transition-colors">
+                    <span class="font-bold text-red-800 flex items-center gap-2">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Failure Case: Redundant Computation
+                    </span>
+                    <span class="text-red-800 group-open:rotate-180 transition-transform duration-300">
+                        <i class="fas fa-chevron-down"></i>
+                    </span>
+                </summary>
+
+                <div class="p-6 border-t border-red-100">
+                    <p class="text-sm text-gray-700 leading-relaxed mb-4">
+                        In this example (counting trailing zeros in 42!), the model correctly identifies the
+                        strategy (counting factors of 5). However, instead of splitting the work (e.g., one thread
+                        counting
+                        factors, another verifying), both threads perform overlapping computations. Thread 1 does
+                        the main calculation, while Thread 2 redundantly verifies it on smaller numbers, which doesn't
+                        accelerate the primary task.
+                    </p>
+                    <div class="bg-white p-4 rounded-lg border border-red-100 font-mono text-xs overflow-x-auto">
+                        <div class="text-gray-700 mb-2">&lt;Parallel&gt;</div>
+                        <div class="pl-4 border-l-2 border-gray-100">
+                            <div class="text-purple-600 mb-1">&lt;Outlines&gt;</div>
+                            <div class="pl-4 text-gray-800 mb-1">
+                                1: Use formula for exponent of 5 in 42!: sum floor(42/5^k)...<br>
+                                2: Validate method on smaller factorials (10!, 25!)...
+                            </div>
+                            <div class="text-purple-600 mb-2">&lt;/Outlines&gt;</div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-gray-50 p-2 rounded">
+                                    <div class="text-blue-600 font-bold mb-1">&lt;Thread 1&gt;</div>
+                                    <div class="text-gray-700">
+                                        Computes floor(42/5)=8, floor(42/25)=1... Sum = 9. Concludes 9 trailing
+                                        zeros.
+                                    </div>
+                                    <div class="text-blue-600 mt-1">&lt;/Thread 1&gt;</div>
+                                </div>
+                                <div class="bg-gray-50 p-2 rounded">
+                                    <div class="text-blue-600 font-bold mb-1">&lt;Thread 2&gt;</div>
+                                    <div class="text-gray-700">
+                                        Applies same formula to 10! (2 zeros) and 25! (6 zeros). Confirms method
+                                        works.
+                                    </div>
+                                    <div class="text-blue-600 mt-1">&lt;/Thread 2&gt;</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-gray-700 mt-2">&lt;/Parallel&gt;</div>
+                    </div>
+                </div>
+            </details>
+        </section>
+
+        <!-- Ablation Studies (Foldable) -->
+        <section class="mb-24" id="ablation">
+            <h2 class="text-4xl font-bold mb-16 text-black border-b border-gray-100 pb-8">Ablation Studies</h2>
+
+            <div class="grid gap-6">
+
+                <!-- Unfolded: Efficiency Analysis (Removed Duplicate) -->
+                <!-- The wall-clock speedup results are now consolidated in the Main Results section above. -->
+
+                <!-- Unfolded: Training Components -->
+                <div class="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                    <div class="p-6 border-b border-gray-100 bg-gray-50">
+                        <h3 class="font-semibold text-lg text-black">Impact of Self-Training & RL</h3>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-gray-800 mb-6 text-sm leading-relaxed">
+                            We dissect the contribution of each stage in our training pipeline. A key metric here is
+                            <strong>Format Correctness</strong>, which measures the percentage of trajectories that
+                            validly follow the <code>&lt;Thread&gt;</code>...<code>&lt;/Thread&gt;</code> structure.
+                        </p>
+                        <p class="text-gray-800 mb-6 text-sm leading-relaxed">
+                            As shown below, <strong>Self-Training is critical for structural alignment</strong>. The
+                            initial SFT stage (959 samples) yields a model that often fails to produce valid
+                            parallel
+                            XML (only 56.4% valid). Scaling up with Self-Training (17k samples) boosts this to
+                            77.0%,
+                            effectively "teaching" the model the parallel format. Finally, <strong>RL
+                                (P-GRPO)</strong>
+                            optimizes the reasoning content itself, pushing accuracy from 74.0% to 79.9% while
+                            maintaining high efficiency.
+                        </p>
+                        <table class="w-full text-sm border border-gray-100 rounded-lg overflow-hidden">
+                            <thead class="bg-gray-50 text-left">
+                                <tr>
+                                    <th class="p-3 border-b border-gray-100">Model Configuration</th>
+                                    <th class="p-3 border-b border-gray-100">Format Correctness</th>
+                                    <th class="p-3 border-b border-gray-100">AIME24 Accuracy</th>
+                                    <th class="p-3 border-b border-gray-100">Token Latency</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-3 border-b border-gray-100">Qwen3-8B + 1st SFT (959 samples)</td>
+                                    <td class="p-3 border-b border-gray-100">56.4%</td>
+                                    <td class="p-3 border-b border-gray-100">74.5%</td>
+                                    <td class="p-3 border-b border-gray-100">17.6k</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 border-b border-gray-100">Qwen3-8B + Self-Training (17k samples)
+                                    </td>
+                                    <td class="p-3 border-b border-gray-100">77.0%</td>
+                                    <td class="p-3 border-b border-gray-100">74.0%</td>
+                                    <td class="p-3 border-b border-gray-100">17.3k</td>
+                                </tr>
+                                <tr class="bg-blue-50 font-bold">
+                                    <td class="p-3 border-b border-gray-100">Qwen3-8B + Self-Training + RL</td>
+                                    <td class="p-3 border-b border-gray-100">72.4%</td>
+                                    <td class="p-3 border-b border-gray-100 text-blue-700">79.9%</td>
+                                    <td class="p-3 border-b border-gray-100 text-blue-700">16.9k</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Moved: Reward Normalization (P-GRPO) -->
+                <div class="border border-gray-200 rounded-xl overflow-hidden bg-white">
+                    <div class="p-6 border-b border-gray-100 bg-gray-50">
+                        <h3 class="font-semibold text-lg text-black">Reward Normalization (P-GRPO)</h3>
+                    </div>
+                    <div class="p-6 bg-white">
+                        <table class="w-full text-sm border border-gray-100 rounded-lg overflow-hidden">
+                            <thead class="bg-gray-50 text-left">
+                                <tr>
+                                    <th class="p-3 border-b border-gray-100">Setting</th>
+                                    <th class="p-3 border-b border-gray-100">Accuracy</th>
+                                    <th class="p-3 border-b border-gray-100">Mean Longest Thread</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-3 border-b border-gray-100">With Std. Normalization
+                                    </td>
+                                    <td class="p-3 border-b border-gray-100">74.79%</td>
+                                    <td class="p-3 border-b border-gray-100">18.7k</td>
+                                </tr>
+                                <tr class="bg-blue-50 font-bold">
+                                    <td class="p-3 border-b border-gray-100">Mean-Centered Only (Ours)
+                                    </td>
+                                    <td class="p-3 border-b border-gray-100 text-blue-700">79.90%</td>
+                                    <td class="p-3 border-b border-gray-100 text-blue-700">16.9k</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+        </section>
+
+        <!-- Citation -->
+        <section class="mb-24" id="citation">
+            <h2 class="text-4xl font-bold mb-16 text-black border-b border-gray-100 pb-8">Citation</h2>
+            <p class="text-xl text-gray-800 mb-8">
+                If you find our work helpful or inspiring for your research, please cite it as follows:
+            </p>
+            <div
+                class="bg-gray-50 text-gray-700 p-6 rounded-xl overflow-x-auto font-mono text-sm border border-gray-200">
+                <pre>@article{lian2025threadweaver,
+  title={ThreadWeaver: Adaptive Threading for Efficient Parallel Reasoning in Language Models},
+  author={Lian, Long and Wang, Sida and Juefei-Xu, Felix and Fu, Tsu-Jui and Li, Xiuyu and Yala, Adam and Darrell, Trevor and Suhr, Alane and Tian, Yuandong and Lin, Xi Victoria},
+  howpublished={\url{https://threadweaver-parallel.github.io/}},
+  note={Research Preprint},
+  year={2025}
+}</pre>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 py-12 text-center text-gray-800 text-sm">
+        <p>ThreadWeaver is a research project by members at Meta, UC Berkeley, and UCSF.</p>
+    </footer>
+
+</body>
+
+</html>
