@@ -9,6 +9,7 @@
 
 [![Project Page](https://img.shields.io/badge/Project-Page-blue?style=for-the-badge)](https://threadweaver-parallel.github.io/)
 [![Paper](https://img.shields.io/badge/Paper-PDF-red?style=for-the-badge)](https://threadweaver-parallel.github.io/assets/paper.pdf)
+[![Code](https://img.shields.io/badge/Code-GitHub-black?style=for-the-badge&logo=github)](https://github.com/facebookresearch/threadweaver)
 
 </div>
 
@@ -221,10 +222,6 @@ This doesn't accelerate the primary task, showing room for improvement in task d
 | :--- | :--- | :--- |
 | With Std. Normalization | 74.79% | 18.7k |
 | **Mean-Centered Only (Ours)** | **79.90%** | **16.9k** |
-
-## 🚧 Code Coming Soon! 🚧
-
-This repo currently contains the paper and the source code for the project page. We are currently waiting for approval from Meta to release the code. Please hang tight! ✨
 
 ## Citation
 
